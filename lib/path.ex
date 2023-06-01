@@ -30,7 +30,7 @@ defmodule YamlToJsonnet.Path do
       prefix = Keyword.get(opts, :prefix)
       path = if prefix, do: [prefix | path], else: path
 
-      EEx.eval_file("lib/translator/generic.eex",
+      EEx.eval_file("lib/templates/path.eex",
         path: replace_in_path(path, replacements),
         key: key,
         value: value
