@@ -1,0 +1,5 @@
+%{
+  "owl": {:hex, :owl, "0.7.0", "4899a1de8f5ba004ff14883f97a4ef97ac46c6395f1da39aa1e27a026443a1b3", [:mix], [], "hexpm", "c4c61de07128fff8fdcefb12722e0420262091296b796f3db4f400a1b3d22e8b"},
+  "yamerl": {:hex, :yamerl, "0.10.0", "4ff81fee2f1f6a46f1700c0d880b24d193ddb74bd14ef42cb0bcf46e81ef2f8e", [:rebar3], [], "hexpm", "346adb2963f1051dc837a2364e4acf6eb7d80097c0f53cbdc3046ec8ec4b4e6e"},
+  "yaml_elixir": {:hex, :yaml_elixir, "2.9.0", "9a256da867b37b8d2c1ffd5d9de373a4fda77a32a45b452f1708508ba7bbcb53", [:mix], [{:yamerl, "~> 0.10", [hex: :yamerl, repo: "hexpm", optional: false]}], "hexpm", "0cb0e7d4c56f5e99a6253ed1a670ed0e39c13fc45a6da054033928607ac08dfc"},
+}

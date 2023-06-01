@@ -1,0 +1,1 @@
+<%= if length(path) > 0, do: "#{Enum.join(path, ".")}.", else: "" %>with<%= Macro.camelize(key) %>(<%= value %>)
