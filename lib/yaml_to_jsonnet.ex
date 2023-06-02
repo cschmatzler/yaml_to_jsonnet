@@ -1,5 +1,4 @@
 defmodule YamlToJsonnet do
-  import YamlToJsonnet.Imports
   alias YamlToJsonnet.Path
 
   def run(files) when is_list(files) do
@@ -33,10 +32,28 @@ defmodule YamlToJsonnet do
 
   defp name(file), do: underscore(get_in(file, ~w(metadata name)))
 
+  defp prefix("CSIDriver"), do: "csiDriver"
+
+  # Since k8s-libsonnet prefixes start lowercased, naively downcase the first letter of the `Kind` of the file.
+  # Needs some extra handling for when this naive approach does not work, see `CSIDriver` above.
   defp prefix(kind) do
     {first, rest} = String.split_at(kind, 1)
     "#{String.downcase(first)}#{rest}"
   end
 
-  defp underscore(string), do: String.replace(string, "-", "_")
+  defp imports(prefixes) do
+    # Opposite of what we are doing in `Path.replace_with_imports/1`, we don't care about the path references here but
+    # only about which import paths correspond with an import name.
+    import_map =
+      Path.as_import()
+      |> Enum.map(fn {_ref, {prefix, import}} -> {prefix, import} end)
+      |> Map.new()
+
+    prefixes
+    |> Enum.map(fn prefix -> "#{prefix} = #{Map.get(import_map, prefix)}" end)
+    |> Enum.join(",\n")
+  end
+
+  # Rudimentary replacement of key-incompatible characters with underscores.
+  defp underscore(string), do: string |> String.replace("-", "_") |> String.replace(".", "_")
 end
