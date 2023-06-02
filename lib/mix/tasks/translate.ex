@@ -22,6 +22,7 @@ defmodule Mix.Tasks.Translate do
       |> String.replace(~r/\n\s*,/, ",")
       |> String.replace(~r/^\s*/m, "")
     end)
+
     # TODO: write to file
   end
 
