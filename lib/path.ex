@@ -4,20 +4,24 @@ defmodule YamlToJsonnet.Path do
     ~w(kind)
   ]
   @as_import %{
+    "affinity" => "affinity",
     "containers" => "container",
     "initContainers" => "container",
     "env" => "envVar",
     "envFrom" => "envVarSource",
+    "nodeSelectorTerms" => "nodeSelectorTerm",
     "secretRef" => "secretReference",
     "ports" => "containerPort",
     "subjects" => "subject",
+    "tolerations" => "toleration",
     "volumeMounts" => "volumeMount",
     "volumes" => "volume"
   }
   @as_object [
     "labels",
     "annotations",
-    "imagePullSecrets"
+    "imagePullSecrets",
+    "matchExpressions"
   ]
 
   def translate_path(path, key, value, imports \\ [], opts \\ [])
