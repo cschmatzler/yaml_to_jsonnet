@@ -1,7 +1,8 @@
 defmodule YamlToJsonnet.Path do
   @ignored_paths [
     ~w(apiVersion),
-    ~w(kind)
+    ~w(kind),
+    ~w(metadata name)
   ]
 
   # Format:
@@ -11,14 +12,17 @@ defmodule YamlToJsonnet.Path do
   # `replace_with_imports/1`), for top-level imports, the `reference` will be the same as the `import_name`.
   @as_import %{
     "affinity" => {"affinity", "k.core.v1.affinity"},
+    "clusterRole" => {"clusterRole", "k.rbac.v1.clusterRole"},
+    "clusterRoleBinding" => {"clusterRoleBinding", "k.rbac.v1.clusterRoleBinding"},
     "containers" => {"container", "k.core.v1.container"},
     "csiDriver" => {"csiDriver", "k.storage.v1.csiDriver"},
     "initContainers" => {"container", "k.core.v1.container"},
     "env" => {"envVar", "k.core.v1.envVar"},
     "envFrom" => {"envVarSource", "k.core.v1.envVarSource"},
     "nodeSelectorTerms" => {"nodeSelectorTerm", "k.core.v1.nodeSelectorTerm"},
-    "secretRef" => {"secretReference", "k.core.v1.secretReference"},
     "ports" => {"containerPort", "k.core.v1.containerPort"},
+    "rules" => {"policyRule", "k.rbac.v1.policyRule"},
+    "secretRef" => {"secretReference", "k.core.v1.secretReference"},
     "subjects" => {"subject", "k.rbac.v1.subject"},
     "tolerations" => {"toleration", "k.core.v1.toleration"},
     "volumeMounts" => {"volumeMount", "k.core.v1.volumeMount"},
@@ -124,7 +128,8 @@ defmodule YamlToJsonnet.Path do
 
         # Join our output together with what existed before, and accumulate imports.
         output ->
-          {Enum.join(output, " #{joiner}\n"), flat_uniq([imports | acc_imports])}
+          output = output |> Enum.reverse() |> Enum.join(" #{joiner}\n")
+          {output, flat_uniq([imports | acc_imports])}
       end
     end)
   end
