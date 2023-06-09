@@ -23,6 +23,7 @@ defmodule YamlToJsonnet.Path do
     "ports" => {"containerPort", "k.core.v1.containerPort"},
     "rules" => {"policyRule", "k.rbac.v1.policyRule"},
     "secretRef" => {"secretReference", "k.core.v1.secretReference"},
+    "serviceAccount" => {"serviceAccount", "k.core.v1.serviceAccount"},
     "subjects" => {"subject", "k.rbac.v1.subject"},
     "tolerations" => {"toleration", "k.core.v1.toleration"},
     "volumeMounts" => {"volumeMount", "k.core.v1.volumeMount"},

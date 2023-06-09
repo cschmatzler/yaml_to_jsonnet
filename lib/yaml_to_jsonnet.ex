@@ -14,7 +14,7 @@ defmodule YamlToJsonnet do
     {mixins, imports} = translate(file, prefix: prefix)
 
     render(
-      [name: name(file), imports: imports(imports), prefix: prefix, mixins: mixins],
+      [name: name(file), imports: imports(imports, prefix), prefix: prefix, mixins: mixins],
       as: Macro.underscore(kind)
     )
   end
@@ -41,7 +41,7 @@ defmodule YamlToJsonnet do
     "#{String.downcase(first)}#{rest}"
   end
 
-  defp imports(prefixes) do
+  defp imports(prefixes, base_prefix) do
     # Opposite of what we are doing in `Path.replace_with_imports/1`, we don't care about the path references here but
     # only about which import paths correspond with an import name.
     import_map =
@@ -49,7 +49,8 @@ defmodule YamlToJsonnet do
       |> Enum.map(fn {_ref, {prefix, import}} -> {prefix, import} end)
       |> Map.new()
 
-    prefixes
+    [base_prefix | prefixes]
+    |> Enum.uniq()
     |> Enum.map(fn prefix -> "#{prefix} = #{Map.get(import_map, prefix)}" end)
     |> Enum.join(",\n")
   end

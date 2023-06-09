@@ -2,10 +2,11 @@ local k = import 'github.com/jsonnet-libs/k8s-libsonnet/1.26/main.libsonnet',
   <%= imports %>;
 
 {
-  <%= name %>: {
+  <%= name %>+: {
     <%= prefix %>: <%= prefix %>.new(
       name=$._config.<%= name %>.name
-    ) +
+    ) <%= if mixins != "" do %>+
     <%= mixins %>
+    <% end %>
   }
 }
