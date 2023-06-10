@@ -2,6 +2,19 @@ local k = import 'github.com/jsonnet-libs/k8s-libsonnet/1.26/main.libsonnet',
   <%= imports %>;
 
 {
+  _config+:: {
+    <%= name %>+: {
+      name: error "Name for <%= name %> is required"
+    }
+  },
+  <%= if length(images) > 0 do %>_images+:: {
+    <%= name %>+: {
+      <%= for {var, image} <- images do %>
+        <%= var %>: "<%= image %>",
+      <% end %>
+    }
+  },
+  <% end %>
   <%= name %>+: {
     <%= prefix %>: <%= prefix %>.new(
       name=$._config.<%= name %>.name

@@ -1,36 +1,42 @@
 defmodule YamlToJsonnet do
   alias YamlToJsonnet.Path
 
-  def run(files) when is_list(files) do
+  def run(files, name) when is_list(files) do
     Enum.map(files, fn file ->
-      translate_file(file)
+      translate_file(file, name)
     end)
   end
 
-  def translate_file(file) do
+  def translate_file(file, name) do
     kind = Map.get(file, "kind")
     prefix = prefix(kind)
 
-    {mixins, imports} = translate(file, prefix: prefix)
+    {mixins, imports, images} = translate(file, name: Path.underscore(name), prefix: prefix)
 
     render(
-      [name: name(file), imports: imports(imports, prefix), prefix: prefix, mixins: mixins],
-      as: Macro.underscore(kind)
+      [
+        name: Path.underscore(name),
+        imports: imports(imports, prefix),
+        images: images,
+        prefix: prefix,
+        mixins: mixins
+      ],
+      name: name,
+      kind: Path.underscore(kind)
     )
   end
 
-  defp render(assigns, _opts \\ []) do
-    EEx.eval_file("lib/templates/output.libsonnet.eex", assigns, trim: true)
+  defp render(assigns, opts) do
+    {"#{opts[:kind]}-#{opts[:name]}.libsonnet",
+     EEx.eval_file("lib/templates/output.libsonnet.eex", assigns, trim: true)}
   end
 
   defp translate(file, opts) do
     Enum.map(file, fn {k, v} ->
-      Path.translate_path([], k, v, [], opts)
+      Path.translate_path([], k, v, [], [], opts)
     end)
     |> Path.reduce_outputs()
   end
-
-  defp name(file), do: underscore(get_in(file, ~w(metadata name)))
 
   defp prefix("CSIDriver"), do: "csiDriver"
 
@@ -55,6 +61,4 @@ defmodule YamlToJsonnet do
     |> Enum.join(",\n")
   end
 
-  # Rudimentary replacement of key-incompatible characters with underscores.
-  defp underscore(string), do: string |> String.replace("-", "_") |> String.replace(".", "_")
 end

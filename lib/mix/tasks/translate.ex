@@ -4,26 +4,25 @@ defmodule Mix.Tasks.Translate do
   def run(args) do
     {opts, _, _} =
       OptionParser.parse(args,
-        switches: [input: :string, output: :string],
-        aliases: [i: :input, o: :output]
+        switches: [input: :string, name: :string],
+        aliases: [i: :input]
       )
 
     translate(opts)
-    |> IO.puts()
   end
 
-  defp translate(input: input) do
+  defp translate(name: name,input: input) do
     Path.join(File.cwd!(), input)
     |> YamlElixir.read_all_from_file!()
-    |> YamlToJsonnet.run()
-    |> Enum.map(fn file ->
-      file
+    |> YamlToJsonnet.run(name)
+    |> Enum.map(fn {path, content} ->
+      content = content
       |> String.replace(~r/\n\s*\+/, " +")
       |> String.replace(~r/\n\s*,/, ",")
       |> String.replace(~r/^\s*/m, "")
-    end)
 
-    # TODO: write to file
+      File.write!("out/#{path}", content)
+    end)
   end
 
   defp translate(_), do: IO.puts("Input file is required")

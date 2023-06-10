@@ -20,7 +20,8 @@ defmodule YamlToJsonnet.MixProject do
 
   defp deps do
     [
-      {:yaml_elixir, "~> 2.9"}
+      {:yaml_elixir, "~> 2.9"},
+      {:jason, "~> 1.4"}
     ]
   end
 end
